@@ -9,7 +9,7 @@ namespace Transportes
     class Program
     {
         static int cantidadTransportes = 10;
-        static int cantidadOmnibus = 2;
+        static int cantidadOmnibus = 5;
 
         static void Main(string[] args)
         {
