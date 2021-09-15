@@ -1,60 +1,106 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Transportes
 {
     class Program
     {
-        static int cantidadTransportes = 10;
-        static int cantidadOmnibus = 5;
+        private static readonly int CantidadTransportes = 10;
+        private static readonly int CantidadOmnibus = 5;
 
         static void Main(string[] args)
         {
             bool salir = false;
-            TransportePublico[] transportes = new TransportePublico[cantidadTransportes];
+            TransportePublico[] transportes = new TransportePublico[CantidadTransportes];
             while (salir == false)
-            { 
-                Console.Write("Ingrese la cantidad de pasajeros para los "+ cantidadOmnibus+" Omnibus seguido para los Taxis, separados por coma: ");
-                string inputConsola;
-                inputConsola = Console.ReadLine();
-                string[] cantidadesPasajeros = inputConsola.Split(',');
-                bool resultado = ValidaYprocesa(transportes, cantidadesPasajeros, salir);
-                if (resultado)
+            {
+                Console.WriteLine("MENU: \n 1 - Ingresar cantidad de pasajeros de transportes \n 2 - Ejecutar operación de un transporte");
+                switch (Console.ReadLine())
                 {
-                    for(int t = 0; t < transportes.Length; t++)
-                    { 
-                        mostrarCantidadDePasajeros(transportes[t], (t+1));
-                    }
+                    case "1":
+                        Console.Write("Ingrese la cantidad de pasajeros para los "+CantidadOmnibus+" Omnibus separados por coma: ");
+                        string inputConsola;
+                        inputConsola = String.Concat(Console.ReadLine(),'/');
+                        Console.Write("Ingrese la cantidad de pasajeros para los " + (CantidadTransportes-CantidadOmnibus) + " Taxis separados por coma: ");
+                        inputConsola = String.Concat(inputConsola, Console.ReadLine());
+                        string[] cantidadesPasajeros = inputConsola.Split(',','/');
+                        bool resultado = ValidaYprocesa(transportes, cantidadesPasajeros, salir);
+                        if (resultado)
+                        {
+                            for (int t = 0; t < transportes.Length; t++)
+                            {
+                                MostrarCantidadDePasajeros(transportes[t]);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("FAIL");
+                        }
+                        break;
+                    case "2":
+                        Console.WriteLine("Ingrese el Tipo de Transporte, Nro de transporte y Acción: " +
+                            "\n 1 - Omnibus " +
+                            "\n 2 - Taxi " +
+                            "\n --- Operación: " +
+                            "\n 3 - Avanzar \n 4 - Detenerse " +
+                            "\n Ejemplo: 1 2 3 (corresponderá a: Omnibus Nro 2, Operación: Avanzar) \n");
+                        string[] inputTemp = Console.ReadLine().Split();
+                        if ( inputTemp.Any(i => Int32.Parse(i) <= 0
+                                  || Int32.Parse(i) > 5)
+                             || !(new[] { "3", "4" }.Contains(inputTemp[2]))
+                                )
+                        {
+                            Console.WriteLine("Error en datos ingresados. Intente nuevamente.");
+                        }
+                        else
+                        {
+                            Console.WriteLine(EjecutarAccionTransporte(inputTemp, transportes));
+                        };
+                        break;
                 }
-                else {
-                    Console.WriteLine("FAIL");
-                }
+                
             } 
              
             Console.Read();
         }
 
-        private static bool ValidaYprocesa(TransportePublico[] pTransportes ,string[] pcantidadesPasajeros,bool psalir)
+        private static string EjecutarAccionTransporte(string[] instruccion, TransportePublico[] pTransportes)
         {
-            if (pcantidadesPasajeros.Length > 10 || pcantidadesPasajeros.Length < 10)
+            string resultado = "";
+            string tipoTransp = instruccion[0] == "1" ? "Omnibus" : "Taxi";
+            switch (instruccion[2])
+            {
+                case "3":
+
+                    resultado = pTransportes.Single(x => x.Id == Int16.Parse(instruccion[1])
+                        && x.ToString().Split('.')[1] == tipoTransp).Avanzar();
+                    break;
+                case "4":
+                    resultado = pTransportes.Single(x => x.Id == Int16.Parse(instruccion[1])
+                        && x.ToString().Split('.')[1] == tipoTransp).Detenerse();
+                    break;
+            }
+            return resultado;
+        }
+
+        private static bool ValidaYprocesa(TransportePublico[] pTransportes ,string[] pCantidadesPasajeros,bool psalir)
+        {
+            if (pCantidadesPasajeros.Length > 10 || pCantidadesPasajeros.Length < 10)
             {
                 Console.WriteLine("Deben ser 5 de cada transporte, ni mas ni menos. Intente de nuevo.");
                 psalir = false;
             }
             else
             {
-                for (int i = 0; i < pcantidadesPasajeros.Length; i++)
+                for (int i = 0; i < pCantidadesPasajeros.Length; i++)
                 {
                     int auxiliar;
-                    if (Int32.TryParse(pcantidadesPasajeros[i], out auxiliar) )
+                    if (Int32.TryParse(pCantidadesPasajeros[i], out auxiliar) )
                     {
-                        if(i > (cantidadOmnibus - 1) ){
+                        if(i > (CantidadOmnibus - 1) ){
                             if (auxiliar <= 3)
                             {
-                                pTransportes[i] = new Taxi(auxiliar);
+                                pTransportes[i] = new Taxi(auxiliar,(i+1)-CantidadOmnibus);
                             }
                             else {
                                 Console.WriteLine("Los Taxis sólo pueden tener hasta 3 pasajeros. ");
@@ -65,7 +111,7 @@ namespace Transportes
                              
                                 if (auxiliar <= 30)
                                 {
-                                    pTransportes[i] = new Omnibus(auxiliar);
+                                    pTransportes[i] = new Omnibus(auxiliar,i+1);
                                 }
                                 else
                                 {
@@ -88,9 +134,9 @@ namespace Transportes
             return psalir;
         }
 
-        private static void mostrarCantidadDePasajeros(TransportePublico transportePublico, int nroTransporte)
+        private static void MostrarCantidadDePasajeros(TransportePublico transportePublico)
         {
-            Console.WriteLine( transportePublico.GetType().ToString().Split('.')[1]+" "+ nroTransporte +" : " + (transportePublico.pasajeros == 0 ? "está vacío" : transportePublico.pasajeros.ToString() + " pasajeros"));
+            Console.WriteLine( transportePublico.GetType().ToString().Split('.')[1]+" "+ transportePublico.Id + " : " + (transportePublico.Pasajeros == 0 ? "está vacío" : transportePublico.Pasajeros.ToString() + " pasajeros"));
         }
     }
 }

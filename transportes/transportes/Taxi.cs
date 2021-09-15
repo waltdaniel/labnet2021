@@ -10,18 +10,22 @@ namespace Transportes
     {
         public Taxi(int pasajeros)
         {
-            this.pasajeros = pasajeros;
+            this.Pasajeros = pasajeros;
         }
-        
-
-        public override void Avanzar()
+        public Taxi(int pasajeros, int id)
         {
-            throw new NotImplementedException();
+            this.Pasajeros = pasajeros;
+            this.Id = id;
         }
 
-        public override void Detenerse()
+        public override string Avanzar()
         {
-            throw new NotImplementedException();
+            return "El taxi " + this.Id + " ha avanzado.";
+        }
+
+        public override string Detenerse()
+        {
+            return "El taxi " + this.Id + " se ha detenido.";
         }
     }
 }

@@ -10,17 +10,21 @@ namespace Transportes
     {
         public Omnibus(int pasajeros)
         {
-            this.pasajeros = pasajeros;
+            this.Pasajeros = pasajeros;
+        }
+        public Omnibus(int pasajeros, int id)
+        {
+            this.Pasajeros = pasajeros;
+            this.Id = id;
+        }
+        public override string Avanzar()
+        {
+            return "El omnibus " + this.Id + " ha avanzado.";
         }
 
-        public override void Avanzar()
+        public override string Detenerse()
         {
-            throw new NotImplementedException();
-        }
-
-        public override void Detenerse()
-        {
-            throw new NotImplementedException();
+            return "El omnibus " + this.Id + " se ha detenido.";
         }
     }
 }

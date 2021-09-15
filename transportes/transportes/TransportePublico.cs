@@ -8,9 +8,10 @@ namespace Transportes
 {
     abstract class TransportePublico
     {
-        public int pasajeros { get; set; } 
+        public int Pasajeros { get; set; }
+        public int Id { get; set; }
 
-        abstract public void Avanzar();
-        abstract public void Detenerse();
+        abstract public string Avanzar();
+        abstract public string Detenerse();
     }
 }
