@@ -60,6 +60,16 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TP4.Entities\TP4.Entities.csproj">
+      <Project>{07B937D4-6C7C-4E4E-8955-004FD3959346}</Project>
+      <Name>TP4.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TP4.Logic\TP4.Logic.csproj">
+      <Project>{5624fd24-93f4-4de8-adab-cdb66ef5860e}</Project>
+      <Name>TP4.Logic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
